@@ -1,5 +1,4 @@
 // Définition des broches : ces premières lignes de code permettent de dire à l'arduino où on a branché quoi.
-sonst int ledRouge = 3;            //Broche de la led de sous alimentation
 const int pinCapteurHumidite = A0; // Broche du capteur d'humidité
 const int pinRelais = 4;           // Broche contrôlant le relais de la pompe
 const int pinPowerSensor = 2;      // Broche pour contrôler l'alimentation du capteur
@@ -25,12 +24,11 @@ void loop() {
   // On met ici le code qui va tourner en boucle pour assurer le suivi de l'humidité au pied de la plante
  if (NombreArrosage < 3) { //Vérifie que l'on a pas trop arrosée pour prévenir une inondation
      digitalWrite(pinPowerSensor, HIGH); // Active l'alimentation du capteur
-    delay(1000); // Laisse le temps au capteur de s'initialiser et stabiliser
- 
-  int valeurHumidite = analogRead(pinCapteurHumidite); // Lit la valeur du capteur d'humidité
-  Serial.print("Humidité du sol: ");// Affiche sur le moniteur série la phrase "humidité du sol"
-  Serial.println(valeurHumidite);// Inscrit cette valeur d'humidité du sol sur le moniteur série
-  digitalWrite(pinPowerSensor, LOW); // Désactive l'alimentation du capteur pour prévenir son oxydation au fil du temps
+     delay(1000); // Laisse le temps au capteur de s'initialiser et stabilise
+     int valeurHumidite = analogRead(pinCapteurHumidite); // Lit la valeur du capteur d'humidité
+     Serial.print("Humidité du sol: ");// Affiche sur le moniteur série la phrase "humidité du sol"
+     Serial.println(valeurHumidite);// Inscrit cette valeur d'humidité du sol sur le moniteur série
+     digitalWrite(pinPowerSensor, LOW); // Désactive l'alimentation du capteur pour prévenir son oxydation au fil du temps
         if (valeurHumidite > seuilHumidite ) { // Si l'humidité lue par le capteur est inférieure à celle du seuil que nous avons déterminé alors...
           digitalWrite(pinRelais, HIGH); // Active le module relai de la pompe
           Serial.println("Pompe activée"); //Affiche le texte "Pompe activée" sur le moniteur série
@@ -40,31 +38,28 @@ void loop() {
           NombreArrosage72 = NombreArrosage72 + 1;
           Temps = Temps + 3;
           delay(10800000); // Laisse passer 3 heures pour laisser a la terre le temps de sécher
-          digitalWrite(ledRouge,LOW) //On éteint une potentielle led rouge
 
         } else { //Si l'humidité lue par le capteur n'est pas inférieure à notre sol (et donc qu'il est bien humide)
           digitalWrite(pinRelais, LOW); // Eteint le relais de la pompe
           Serial.println("Pompe désactivée"); // Affiche "Pompe désactivée" sur le moniteur série
           Temps = Temps + 1;
-          delay(3600000);
+          delay(3600000);  //attends une heure 
         }
  }
- if (Temps = 24)               
-   Temps = 0;                 //On remet à zéro la avriable de temps
-   Temps72 = Temps72 + 1;               //On rajoute 1 jours à notre compteur de jour
+ if (Temps = 24)  {             
+   Temps = 0;                 //On remet à zéro la variable de temps
+   Temps72 = Temps72 + 1;     //On rajoute 1 jours à notre compteur de jour
    NombreArrosage = 0;        //On remet à zéro le nombre d'arrosage quotidien
-
-if (Temps72 = 3){        
-  if (NombreArrosage72 = 0){
-    digitalWrite(ledRouge,HIGH);             //On allume une led rouge si jamais on a pas arrosé depuis 3 jours
-  }
+ }
+if (Temps72 = 3) {
+  
   Temps72 = 0;                               //On remet à zéro la variable de temps sur trois jours
   NombreArrosge = 0;                         //On remet à zéro le compteur du nombre d'arrosage dans les trois jours
 } 
 
    
  if  (NombreArrosage > 3){
-  Serial.println("Anti-Inondation : Système désactivé pour prévenir tout incident ");
+  Serial.print("Anti-Inondation : Système désactivé pour prévenir tout incident ");
   Temps = Temps + 1;
   delay (3600000);
   
